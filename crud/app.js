@@ -48,6 +48,29 @@ app.post("/webtoon", (req, res) => {
   res.status(200).json(newItem);
 });
 
+app.delete("/webtoon/:id", (req, res) => {
+  const itemId = parseInt(req.params.id, 10);
+  const itemIndex = webtoon.findIndex((i) => i.id == itemId);
+  if (itemIndex !== -1) {
+    webtoon.splice(itemId + 1, 1);
+    res.status(204).send("데이터 삭제됨");
+  } else {
+    res.status(404).json({ message: "삭제할 데이터가 없음" });
+  }
+});
+
+app.put("/webtoon/:id", (req, res) => {
+  const itemId = parseInt(req.params.id, 10);
+  const itemIndex = webtoon.findIndex((i) => i.id == itemId);
+  if (itemIndex !== -1) {
+    const updatedItem = { ...webtoon[itemIndex + 1], ...req.body };
+    webtoon[itemIndex + 1] = updatedItem;
+    res.json(updatedItem);
+  } else {
+    res.status(404).json({ message: "업데이트할 데이터가 없음" });
+  }
+});
+
 app.listen(port, () => {
   console.log(`${port}에서 서버가 실행됐어요.`);
 });
